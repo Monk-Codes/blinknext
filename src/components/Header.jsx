@@ -1,8 +1,10 @@
+"use client"
+import { signIn, useSession } from 'next-auth/react'
 import Image from 'next/image'
 import Link from 'next/link'
-import React from 'react'
 
 export default function Header() {
+  const {data:session}=useSession()
   return (
     <div className='shadow-sm border-b sticky'>
 
@@ -18,7 +20,12 @@ export default function Header() {
       {/* input */}
       <input type="text" placeholder='Search...' className='bg-gray-50 border border-gray-200 rounded-md text-sm w-full py-2 px-4 max-w-[210px]' />
     {/* menu */}
-    <button className='text-blue-500 text-sm font-semibold'>Login</button>
+    {session?(
+      <img src={session.user.image} alt="img"/>
+    ):(
+
+      <button className='text-blue-500 text-sm font-semibold' onClick={()=>signIn()}>Login</button>
+    )}
     </div>
     </div>
   )

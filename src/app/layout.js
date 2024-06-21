@@ -1,5 +1,6 @@
 import Header from "@/components/Header";
 import "./globals.css";
+import SessionWrapper from "@/components/SessionWrapper";
 
 export const metadata = {
   title: "Blink",
@@ -8,10 +9,13 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
+    <SessionWrapper>
     <html lang="en">
       <body>
         <Header/>
-        {children}</body>
+        {children}
+        </body>
     </html>
+    </SessionWrapper>
   );
 }
