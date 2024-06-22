@@ -1,3 +1,12 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer utilities {
+ .focus\:outline-cyan-400:focus {
+  outline-color: rgb(0, 255, 255);
+ }
+ .focus\:shadow-custom:focus {
+  box-shadow: -3px -3px 15px rgb(0, 255, 255);
+ }
+}
