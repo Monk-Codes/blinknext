@@ -11,7 +11,7 @@ export default function RootLayout({ children }) {
  return (
   <SessionWrapper>
    <html lang="en">
-    <body className="bg-amber-50">
+    <body>
      <Header />
      {children}
     </body>
