@@ -8,16 +8,19 @@ import { LuImagePlus } from "react-icons/lu";
 import { HiCamera } from "react-icons/hi";
 import { app } from "@/firebase";
 import { getDownloadURL, getStorage, ref, uploadBytesResumable } from "firebase/storage";
-
+import { collection, getFirestore, serverTimestamp, addDoc } from "firebase/firestore";
 export default function Header() {
  // DEFAULTS
- const filePickerRef = useRef(null);
  const { data: session } = useSession();
+ const filePickerRef = useRef(null);
  const [isOpen, setIsOpen] = useState(false);
+ const [caption, setCaption] = useState("");
  const [selectedFile, setSelectedFile] = useState(null);
  const [imgFileUrl, setImgFileUrl] = useState(null);
  const [imageIsUploading, setImageIsUploading] = useState(false);
+ const [postUploading, setPostUploading] = useState(false);
 
+ const db = getFirestore(app);
  //  ADD IMAGE FILE
  function addImgToPost(img) {
   const file = img.target.files[0];
@@ -49,7 +52,6 @@ export default function Header() {
     getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
      setImgFileUrl(downloadURL);
      setImageIsUploading(false);
-     setSelectedFile(null);
     });
    }
   );
@@ -61,16 +63,29 @@ export default function Header() {
   }
  }, [selectedFile, uploadImageToStorage]);
 
+ async function handleSubmit() {
+  setPostUploading(true);
+  const docRef = await addDoc(collection(db, "posts"), {
+   username: session.user.username,
+   caption,
+   profileImg: session.user.image,
+   image: imgFileUrl,
+   timestamp: serverTimestamp(),
+  });
+  setPostUploading(false);
+  setIsOpen(false);
+ }
+ //  RETURN
  return (
   <div className="shadow-sm border-b sticky">
    <div className="flex justify-between items-center max-w-5xl mx-auto sticky top-0 z-50 px-1">
     {/* Logo */}
     <div className="logo p-1">
      <Link href="/" className="hidden lg:inline-flex">
-      <Image src="/assets/Blink t.png" width={100} height={100} alt="blink" />
+      <img src="/assets/Blink t.png" width={200} height={100} alt="blink" />
      </Link>
      <Link href="/" className="lg:hidden">
-      <Image src="/assets/Blink t.png" width={50} height={80} alt="blink" />
+      <img src="/assets/Blink t.png" width={100} height={50} alt="blink" />
      </Link>
     </div>
     {/* Input */}
@@ -81,7 +96,7 @@ export default function Header() {
       <div className="flex gap-3 items-center p-1">
        <LuImagePlus className="text-2xl cursor-pointer transform hover:scale-110 hover:text-red-600 transition-all duration-150" onClick={() => setIsOpen(true)} />
 
-       <Image src={session.user.image} alt="img" width={10} height={10} className="h-8 w-8 rounded-full cursor-pointer" onClick={() => signOut()} />
+       <img src={session.user.image} alt="img" width={10} height={10} className="h-8 w-8 rounded-full cursor-pointer" onClick={() => signOut()} />
       </div>
      </>
     ) : (
@@ -109,7 +124,7 @@ export default function Header() {
       </button>
       <div className="flex justify-center items-center">
        {selectedFile ? (
-        <Image src={imgFileUrl} onClick={() => setSelectedFile(null)} alt="img" width="10" height="10" className={`"max-h-[250px] w-full object-cover cursor-pointer" ${imageIsUploading ? "animate-pulse" : ""}`} />
+        <img src={imgFileUrl} onClick={() => setSelectedFile(null)} alt="img" width="10" height="10" className={`"max-h-[250px] w-full object-cover cursor-pointer" ${imageIsUploading ? "animate-pulse" : ""}`} />
        ) : (
         <HiCamera onClick={() => filePickerRef.current.click()} className="text-4xl text-amber-400 cursor-pointer" />
        )}
@@ -121,8 +136,13 @@ export default function Header() {
        placeholder="Enter caption..."
        className="p-3 border text-center w-full
                 focus:ring-0 outline-none bg-amber-100 rounded-xl mb-1"
+       onChange={(e) => setCaption(e.target.value)}
       />
-      <button disabled className="w-1/2 bg-amber-500 text-white p-2 shadow-sm rounded-2xl hover:brightness-125 disabled:bg-gray-200 disabled:hover:brightness-100">
+      <button
+       disabled={!selectedFile || caption.trim() === "" || postUploading || imageIsUploading}
+       onClick={handleSubmit}
+       className="w-1/2 bg-amber-500 text-white p-2 shadow-sm rounded-2xl hover:brightness-125 disabled:bg-gray-200 disabled:hover:brightness-100"
+      >
        Add post
       </button>
      </div>
