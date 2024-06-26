@@ -3,24 +3,47 @@ import React, { useState } from "react";
 import { HiOutlineDotsVertical } from "react-icons/hi";
 import LikeSection from "./LikeSection";
 import CommentSection from "./CommentSection";
+import { app } from "@/firebase";
+import { getFirestore, doc, updateDoc, deleteDoc } from "firebase/firestore";
 
 export default function Post({ post }) {
  const [showOptions, setShowOptions] = useState(false);
+ const [isEditing, setIsEditing] = useState(false);
+ const [newCaption, setNewCaption] = useState(post.caption);
+
+ const db = getFirestore(app);
 
  function toggleOptions() {
   setShowOptions(!showOptions);
  }
 
- function handleEdit() {
-  // Implement your edit logic here
-  console.log("Edit post with id:", post.id);
+ async function handleEdit() {
+  setIsEditing(true);
   setShowOptions(false);
  }
 
- function handleDelete() {
-  // Implement your delete logic here
-  console.log("Delete post with id:", post.id);
+ async function handleDelete() {
+  try {
+   await deleteDoc(doc(db, "posts", post.id));
+   alert("Post deleted successfully");
+   window.location.reload(); // Refresh the page after deleting
+  } catch (error) {
+   console.error("Error deleting post: ", error);
+  }
   setShowOptions(false);
+ }
+
+ async function saveEdit() {
+  try {
+   await updateDoc(doc(db, "posts", post.id), {
+    caption: newCaption,
+   });
+   alert("Post updated successfully");
+   setIsEditing(false);
+   window.location.reload(); // Refresh the page after editing
+  } catch (error) {
+   console.error("Error updating post: ", error);
+  }
  }
 
  return (
@@ -31,11 +54,11 @@ export default function Post({ post }) {
     <HiOutlineDotsVertical className="h-5 cursor-pointer" onClick={toggleOptions} />
    </div>
    {showOptions && (
-    <div className="absolute top-10 right-2 bg-transparent border border-amber-200 rounded-lg shadow-xl z-10">
-     <button className="block w-full text-left px-4 py-2 text-sm hover:bg-stone-50" onClick={handleEdit}>
+    <div className="absolute top-10 right-2 bg-transparent border border-amber-100 rounded shadow-xl z-10">
+     <button className="block w-full text-left px-4 py-2 text-sm  hover:bg-gray-50" onClick={handleEdit}>
       ✏️
      </button>
-     <button className="block w-full text-left px-4 py-2 text-sm hover:bg-stone-50" onClick={handleDelete}>
+     <button className="block w-full text-left px-4 py-2 text-sm  hover:bg-gray-50" onClick={handleDelete}>
       ❌
      </button>
     </div>
@@ -43,10 +66,19 @@ export default function Post({ post }) {
    <img src={post.image} alt={post.caption} className="object-cover w-full" />
    <div className="p-1">
     <LikeSection id={post.id} />
-    <p className="truncate">
-     <span className="font-bold mr-2">{post.username}</span>
-     {post.caption}
-    </p>
+    {isEditing ? (
+     <div>
+      <input type="text" value={newCaption} onChange={(e) => setNewCaption(e.target.value)} className="border p-1 w-full" />
+      <button onClick={saveEdit} className="text-blue-500">
+       Save
+      </button>
+     </div>
+    ) : (
+     <p className="truncate">
+      <span className="font-bold mr-2">{post.username}</span>
+      {post.caption}
+     </p>
+    )}
     <CommentSection id={post.id} />
    </div>
   </div>

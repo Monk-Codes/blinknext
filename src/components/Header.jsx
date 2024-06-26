@@ -112,7 +112,7 @@ export default function Header() {
     <Modal
      isOpen={isOpen}
      onRequestClose={() => setIsOpen(false)}
-     className="max-w-lg w-[80%] p-5 absolute top-[10%] left-[50%] translate-x-[-50%]  border-2 border-amber-100 rounded-xl shadow-sm bg-amber-200 bg-clip-padding backdrop-filter backdrop-blur-sm bg-opacity-10"
+     className="max-w-lg w-[80%] p-5 absolute top-[10%] left-[50%] translate-x-[-50%]  border-2 border-amber-100 rounded-xl shadow-sm bg-amber-100 bg-clip-padding backdrop-filter backdrop-blur-sm bg-opacity-10"
      ariaHideApp={false}
     >
      <div className="flex flex-col justify-center items-center ">
@@ -142,7 +142,7 @@ export default function Header() {
       <button
        disabled={!selectedFile || caption.trim() === "" || postUploading || imageIsUploading}
        onClick={handleSubmit}
-       className="w-1/2 bg-amber-500 text-white p-2 shadow-sm rounded-2xl hover:brightness-125 disabled:bg-gray-200 disabled:hover:brightness-100"
+       className="w-1/2 bg-amber-400 text-white p-2 shadow-sm rounded-2xl hover:brightness-125 disabled:bg-gray-200 disabled:hover:brightness-100"
       >
        Add post
       </button>
