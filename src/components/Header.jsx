@@ -112,7 +112,7 @@ export default function Header() {
     <Modal
      isOpen={isOpen}
      onRequestClose={() => setIsOpen(false)}
-     className="max-w-lg w-[90%] p-5 absolute top-[0%] left-[50%] translate-x-[-50%]  border-2 border-amber-100 rounded-xl shadow-sm bg-amber-200 bg-clip-padding backdrop-filter backdrop-blur-sm bg-opacity-10"
+     className="max-w-lg w-[80%] p-5 absolute top-[10%] left-[50%] translate-x-[-50%]  border-2 border-amber-100 rounded-xl shadow-sm bg-amber-200 bg-clip-padding backdrop-filter backdrop-blur-sm bg-opacity-10"
      ariaHideApp={false}
     >
      <div className="flex flex-col justify-center items-center ">
