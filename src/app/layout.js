@@ -11,7 +11,7 @@ export default function RootLayout({ children }) {
  return (
   <SessionWrapper>
    <html lang="en">
-    <body>
+    <body className="scroll-smooth scrollbar-hide">
      <Header />
      {children}
     </body>
