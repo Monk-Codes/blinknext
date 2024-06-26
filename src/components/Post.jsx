@@ -5,6 +5,7 @@ import LikeSection from "./LikeSection";
 import CommentSection from "./CommentSection";
 import { app } from "@/firebase";
 import { getFirestore, doc, updateDoc, deleteDoc } from "firebase/firestore";
+import { toast } from "react-toastify";
 
 export default function Post({ post }) {
  const [showOptions, setShowOptions] = useState(false);
@@ -25,8 +26,8 @@ export default function Post({ post }) {
  async function handleDelete() {
   try {
    await deleteDoc(doc(db, "posts", post.id));
-   alert("Post deleted successfully");
-   window.location.reload(); // Refresh the page after deleting
+   toast.error("Post deleted successfully");
+   window.location.reload();
   } catch (error) {
    console.error("Error deleting post: ", error);
   }
@@ -38,9 +39,9 @@ export default function Post({ post }) {
    await updateDoc(doc(db, "posts", post.id), {
     caption: newCaption,
    });
-   alert("Post updated successfully");
+   toast.success("Post updated successfully");
    setIsEditing(false);
-   window.location.reload(); // Refresh the page after editing
+   window.location.reload();
   } catch (error) {
    console.error("Error updating post: ", error);
   }

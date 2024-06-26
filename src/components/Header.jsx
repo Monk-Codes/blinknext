@@ -9,6 +9,7 @@ import { HiCamera } from "react-icons/hi";
 import { app } from "@/firebase";
 import { getDownloadURL, getStorage, ref, uploadBytesResumable } from "firebase/storage";
 import { collection, getFirestore, serverTimestamp, addDoc } from "firebase/firestore";
+import { toast } from "react-toastify";
 export default function Header() {
  // DEFAULTS
  const { data: session } = useSession();
@@ -72,6 +73,7 @@ export default function Header() {
    image: imgFileUrl,
    timestamp: serverTimestamp(),
   });
+  toast.success("post success");
   setPostUploading(false);
   setIsOpen(false);
   location.reload();
@@ -112,7 +114,7 @@ export default function Header() {
     <Modal
      isOpen={isOpen}
      onRequestClose={() => setIsOpen(false)}
-     className="max-w-lg w-[80%] p-5 absolute top-[10%] left-[50%] translate-x-[-50%]  border-2 border-amber-100 rounded-xl shadow-sm bg-amber-100 bg-clip-padding backdrop-filter backdrop-blur-sm bg-opacity-10"
+     className="max-w-lg w-[80%] p-5 absolute top-[10%] left-[50%] translate-x-[-50%]  border-2 border-amber-100 rounded-xl shadow-sm bg-stone-300 bg-clip-padding backdrop-filter backdrop-blur-sm bg-opacity-10"
      ariaHideApp={false}
     >
      <div className="flex flex-col justify-center items-center ">
